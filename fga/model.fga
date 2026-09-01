@@ -1,0 +1,35 @@
+model
+  schema 1.1
+
+# A staff member. Identity comes from your IdP — OpenFGA only needs the id.
+type user
+
+# The company. National-scope roles live here so they cost ONE tuple,
+# not one tuple per record.
+type organization
+  relations
+    define national_analyst: [user]
+
+# A regional grouping. Field officers are assigned here, and every
+# territory belongs to the organization.
+type territory
+  relations
+    define organization: [organization]
+    define field_officer: [user]
+
+    # You can view a territory if you run it, OR if you have
+    # national scope at the org that owns it.
+    define viewer: field_officer or national_analyst from organization
+
+# The document. One agent record = one retrievable document.
+type agent
+  relations
+    define territory: [territory]
+
+    # Two ways in:
+    #   [user]              -> a direct grant. The escalation case.
+    #   viewer from territory -> inherited through the territory graph.
+    #
+    # This second line is the whole ReBAC argument: permission is
+    # computed by walking relationships, not stored per record.
+    define viewer: [user] or viewer from territory
