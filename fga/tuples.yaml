@@ -1,0 +1,105 @@
+# The entire permission database. 27 lines of relationships.
+#
+# Read this on stage. The point to make: there is no permission column
+# on the agent records, and no role table. Just relationships.
+
+# ── National scope: ONE tuple ────────────────────────────────────────
+# Ama is a national analyst at the org. That single line is what grants
+# her every agent record — now and every record added in future.
+- user: user:ama
+  relation: national_analyst
+  object: organization:mtn_ghana
+
+# ── Territories belong to the org ────────────────────────────────────
+# This is the hop that makes Ama's one tuple reach the agents.
+- user: organization:mtn_ghana
+  relation: organization
+  object: territory:kumasi
+- user: organization:mtn_ghana
+  relation: organization
+  object: territory:accra
+- user: organization:mtn_ghana
+  relation: organization
+  object: territory:tamale
+- user: organization:mtn_ghana
+  relation: organization
+  object: territory:takoradi
+
+# ── Field officers: one tuple each, scoped to a territory ────────────
+- user: user:kwame
+  relation: field_officer
+  object: territory:kumasi
+- user: user:yaw
+  relation: field_officer
+  object: territory:accra
+
+# ── Agents belong to territories ─────────────────────────────────────
+- user: territory:kumasi
+  relation: territory
+  object: agent:KUM-001
+- user: territory:kumasi
+  relation: territory
+  object: agent:KUM-002
+- user: territory:kumasi
+  relation: territory
+  object: agent:KUM-003
+- user: territory:kumasi
+  relation: territory
+  object: agent:KUM-004
+- user: territory:kumasi
+  relation: territory
+  object: agent:KUM-005
+- user: territory:accra
+  relation: territory
+  object: agent:ACC-001
+- user: territory:accra
+  relation: territory
+  object: agent:ACC-002
+- user: territory:accra
+  relation: territory
+  object: agent:ACC-003
+- user: territory:accra
+  relation: territory
+  object: agent:ACC-004
+- user: territory:accra
+  relation: territory
+  object: agent:ACC-005
+- user: territory:tamale
+  relation: territory
+  object: agent:TAM-001
+- user: territory:tamale
+  relation: territory
+  object: agent:TAM-002
+- user: territory:tamale
+  relation: territory
+  object: agent:TAM-003
+- user: territory:tamale
+  relation: territory
+  object: agent:TAM-004
+- user: territory:tamale
+  relation: territory
+  object: agent:TAM-005
+- user: territory:takoradi
+  relation: territory
+  object: agent:TAK-001
+- user: territory:takoradi
+  relation: territory
+  object: agent:TAK-002
+- user: territory:takoradi
+  relation: territory
+  object: agent:TAK-003
+- user: territory:takoradi
+  relation: territory
+  object: agent:TAK-004
+- user: territory:takoradi
+  relation: territory
+  object: agent:TAK-005
+
+# ── NOT seeded on purpose ────────────────────────────────────────────
+# The escalation tuple is deliberately absent:
+#
+#   user:kwame  viewer  agent:ACC-003
+#
+# The Streamlit "Escalate" button writes it live on stage. That is the
+# ReBAC moment — one relationship, written at runtime, and a field
+# officer can reach across a territory boundary for exactly one case.
